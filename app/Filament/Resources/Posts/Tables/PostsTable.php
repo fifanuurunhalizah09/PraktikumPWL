@@ -22,8 +22,7 @@ class PostsTable
                 TextColumn::make('category.name'),
                 ColorColumn::make('color'),
                 ImageColumn::make('image')
-                    ->disk('public'),
-
+                    ->getStateUsing(fn ($record) => asset('storage/' . $record->image)),
             ])
             ->filters([
                 //
