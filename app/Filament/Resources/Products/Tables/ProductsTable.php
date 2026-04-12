@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Products\Tables;
 
-use Dom\Text;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -10,6 +9,7 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\BadgeColumn; 
 
 class ProductsTable
 {
@@ -17,14 +17,21 @@ class ProductsTable
     {
         return $table
             ->columns([
-                //
                 TextColumn::make('name'),
                 TextColumn::make('sku'),
                 TextColumn::make('price'),
                 TextColumn::make('stock'),
+
+                BadgeColumn::make('is_active')
+                    ->label('Status')
+                    ->colors([
+                        'success' => true,
+                        'danger' => false,
+                    ])
+                    ->formatStateUsing(fn ($state) => $state ? 'Active' : 'Inactive'),
+
                 ImageColumn::make('image')
                     ->getStateUsing(fn ($record) => asset('storage/' . $record->image))
-                    ->disk('public'),
             ])
             ->filters([
                 //

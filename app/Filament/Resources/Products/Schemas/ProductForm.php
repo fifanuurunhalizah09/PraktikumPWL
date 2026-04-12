@@ -44,7 +44,7 @@ class ProductForm
                                 TextInput::make('price')
                                     ->numeric()
                                     ->required()
-                                    ->minValue(1), // ✅ harga > 0
+                                    ->minValue(1),
 
                                 TextInput::make('stock')
                                     ->numeric()
