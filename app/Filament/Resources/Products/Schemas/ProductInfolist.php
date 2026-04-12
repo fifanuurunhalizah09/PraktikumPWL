@@ -29,7 +29,7 @@ class ProductInfolist
                         TextEntry::make('sku')
                             ->label('Product SKU')
                             ->badge()
-                            ->color('success'),
+                            ->color('warning'),
 
                         TextEntry::make('description')
                             ->label('Product Description'),
@@ -41,22 +41,24 @@ class ProductInfolist
                     ])
                     ->columnSpanFull(),
 
-                    Section::make('Pricing & Stock')
+                Section::make('Pricing & Stock')
                     ->schema([
                         TextEntry::make('price')
                             ->label('Product Price')
-                            ->icon('heroicon-o-currency-dollar'),
+                            ->icon('heroicon-o-currency-dollar')
+                            ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
 
                         TextEntry::make('stock')
-                            ->label('Product Stock'),
+                            ->label('Product Stock')
+                            ->icon('heroicon-o-cube'),
                     ]),
 
-                    Section::make('Media')
+                Section::make('Media')
                     ->schema([
                         ImageEntry::make('image')
                             ->label('Product Image')
-                            ->getStateUsing(fn ($record) => asset('storage/' . $record->image)),
-                        
+                            ->getStateUsing(fn($record) => asset('storage/' . $record->image)),
+
                         IconEntry::make('is_active')
                             ->label('Is Active')
                             ->boolean(),
