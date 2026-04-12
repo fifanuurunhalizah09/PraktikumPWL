@@ -12,7 +12,6 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Checkbox;
 use Filament\Actions\Action;
 
-
 class ProductForm
 {
     public static function configure(Schema $schema): Schema
@@ -20,8 +19,9 @@ class ProductForm
         return $schema
             ->components([
                 Wizard::make([
-                    // Step::make('Product Details')
+
                     Step::make('Product Info')
+                        ->icon('heroicon-o-information-circle')
                         ->description('Isi Informasi Produk')
                         ->schema([
                             Group::make([
@@ -32,31 +32,37 @@ class ProductForm
                                     ->required(),
                             ])->columns(2),
 
-                            MarkdownEditor::make('description'),
+                            MarkdownEditor::make('description')
+                                ->columnSpanFull(),
                         ]),
 
-                    // Step::make('Product prices')
-                    Step::make('Product Price and Stock')
-                        ->description('Isi Harga Produk')
+                    Step::make('Pricing & Stock')
+                        ->icon('heroicon-o-currency-dollar')
+                        ->description('Isi Harga dan Stok')
                         ->schema([
                             Group::make([
                                 TextInput::make('price')
-                                    ->required(),
+                                    ->numeric()
+                                    ->required()
+                                    ->minValue(1), // ✅ harga > 0
 
                                 TextInput::make('stock')
+                                    ->numeric()
                                     ->required(),
                             ])->columns(2),
-
-                            MarkdownEditor::make('description'),
                         ]),
-                    //Step::make(media)
-                    Step::make('Media and status')
-                        ->description('Isi Gambar Produk')
+
+                    Step::make('Media & Status')
+                        ->icon('heroicon-o-photo')
+                        ->description('Upload gambar & status')
                         ->schema([
                             FileUpload::make('image')
+                                ->image()
                                 ->disk('public')
                                 ->directory('products'),
+
                             Checkbox::make('is_active'),
+
                             Checkbox::make('is_featured'),
                         ]),
                 ])
@@ -68,6 +74,6 @@ class ProductForm
                             ->color('primary')
                             ->submit('save')
                     ),
-            ]); 
+            ]);
     }
 }
