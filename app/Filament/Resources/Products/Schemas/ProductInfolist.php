@@ -2,15 +2,12 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
-use Dom\Text;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
-use Filament\Schemas\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\IconEntry;
-
 
 class ProductInfolist
 {
@@ -19,9 +16,9 @@ class ProductInfolist
         return $schema
             ->components([
                 Tabs::make('Product Tabs')
-                ->vertical()
+                    ->vertical()
                     ->tabs([
-                        Tabs\Tab::make('Product Info')
+                        Tab::make('Product Info')
                             ->icon('heroicon-o-academic-cap')
                             ->schema([
                                 TextEntry::make('name')
@@ -39,33 +36,37 @@ class ProductInfolist
                             ])
                             ->columnSpanFull(),
 
-                        Tabs\Tab::make('Pricing & Stock')
+                        Tab::make('Pricing & Stock')
                             ->icon('heroicon-o-currency-dollar')
-                            ->badge('10')
-                            ->badgeColor('info')
+                            ->badge(fn ($record) => $record->stock)
+                            ->badgeColor(fn ($record) =>
+                                $record->stock > 10 ? 'success' :
+                                ($record->stock > 0 ? 'warning' : 'danger')
+                            )
                             ->schema([
                                 TextEntry::make('price')
                                     ->label('Price')
                                     ->icon('heroicon-o-currency-dollar'),
+
                                 TextEntry::make('stock')
                                     ->label('Stock'),
                             ]),
-
-                        Tabs\Tab::make('Media & Status')
+                        Tab::make('Media & Status')
                             ->icon('heroicon-o-photo')
                             ->schema([
                                 ImageEntry::make('image')
                                     ->label('Product Image')
-                                    ->getStateUsing(fn($record) => asset('storage/' . $record->image)),
+                                    ->getStateUsing(fn ($record) => asset('storage/' . $record->image)),
+
                                 IconEntry::make('is_active')
                                     ->label('Active')
                                     ->boolean(),
+
                                 IconEntry::make('is_featured')
                                     ->label('Featured')
                                     ->boolean(),
                             ]),
                     ]),
-
             ]);
     }
 }
