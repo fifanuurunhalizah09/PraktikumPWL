@@ -4,6 +4,8 @@ namespace App\Filament\Resources\Products\Schemas;
 
 use Dom\Text;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\ImageEntry;
@@ -16,57 +18,54 @@ class ProductInfolist
     {
         return $schema
             ->components([
-                Section::make('Product Info')
-                    ->schema([
-                        TextEntry::make('name')
-                            ->label('Product Name')
-                            ->weight('bold')
-                            ->color('primary'),
+                Tabs::make('Product Tabs')
+                ->vertical()
+                    ->tabs([
+                        Tabs\Tab::make('Product Info')
+                            ->icon('heroicon-o-academic-cap')
+                            ->schema([
+                                TextEntry::make('name')
+                                    ->label('Product Name')
+                                    ->weight('bold')
+                                    ->color('primary'),
 
-                        TextEntry::make('id')
-                            ->label('Product ID'),
+                                TextEntry::make('sku')
+                                    ->label('SKU')
+                                    ->badge()
+                                    ->color('success'),
 
-                        TextEntry::make('sku')
-                            ->label('Product SKU')
-                            ->badge()
-                            ->color('warning'),
+                                TextEntry::make('description')
+                                    ->label('Description'),
+                            ])
+                            ->columnSpanFull(),
 
-                        TextEntry::make('description')
-                            ->label('Product Description'),
-
-                        TextEntry::make('created_at')
-                            ->label('Product Creation Date')
-                            ->date('d M Y')
-                            ->color('info'),
-                    ])
-                    ->columnSpanFull(),
-
-                Section::make('Pricing & Stock')
-                    ->schema([
-                        TextEntry::make('price')
-                            ->label('Product Price')
+                        Tabs\Tab::make('Pricing & Stock')
                             ->icon('heroicon-o-currency-dollar')
-                            ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                            ->badge('10')
+                            ->badgeColor('info')
+                            ->schema([
+                                TextEntry::make('price')
+                                    ->label('Price')
+                                    ->icon('heroicon-o-currency-dollar'),
+                                TextEntry::make('stock')
+                                    ->label('Stock'),
+                            ]),
 
-                        TextEntry::make('stock')
-                            ->label('Product Stock')
-                            ->icon('heroicon-o-cube'),
+                        Tabs\Tab::make('Media & Status')
+                            ->icon('heroicon-o-photo')
+                            ->schema([
+                                ImageEntry::make('image')
+                                    ->label('Product Image')
+                                    ->getStateUsing(fn($record) => asset('storage/' . $record->image)),
+                                IconEntry::make('is_active')
+                                    ->label('Active')
+                                    ->boolean(),
+                                IconEntry::make('is_featured')
+                                    ->label('Featured')
+                                    ->boolean(),
+                            ]),
                     ]),
 
-                Section::make('Media')
-                    ->schema([
-                        ImageEntry::make('image')
-                            ->label('Product Image')
-                            ->getStateUsing(fn($record) => asset('storage/' . $record->image)),
-
-                        IconEntry::make('is_active')
-                            ->label('Is Active')
-                            ->boolean(),
-
-                        IconEntry::make('is_featured')
-                            ->label('Is Featured')
-                            ->boolean(),
-                    ]),
             ]);
     }
 }
