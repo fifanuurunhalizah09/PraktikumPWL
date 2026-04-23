@@ -45,16 +45,15 @@ class PostsTable
             ->filters([
                 Filter::make('created_at')
                     ->label('Creation Date')
-                    ->schema([
+                    ->form([
                         DatePicker::make('created_at')
                             ->label('Select Date : ')
                     ])
                     ->query(function ($query, $data) {
-                        return $query
-                            ->when(
-                                $data['created_at'],
-                                fn($query, $date) => $query->whereDate('created_at', $date)
-                            );
+                        return $query->when(
+                            $data['created_at'],
+                            fn($query, $date) => $query->whereDate('created_at', $date)
+                        );
                     }),
                 SelectFilter::make('category_id')
                     ->relationship('category', 'name')
