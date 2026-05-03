@@ -75,19 +75,24 @@ class PostsTable
             ])
 
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()
+                    ->icon('heroicon-o-pencil-square'),
+                DeleteAction::make()
+                    ->icon('heroicon-o-trash'),
+                ReplicateAction::make()
+                    ->icon('heroicon-o-document-duplicate'),
                 DeleteAction::make(),
                 ReplicateAction::make(),
                 Action::make('status')
-                    ->label('Status Change')
-                    ->icon('heroicon-o-check-circle')
-                    ->schema([
-                        Checkbox::make('published')
-                        ->default(fn($record): bool => $record->published),
-                    ])
-                    ->action(function ($record, $data) {
-                        $record->update(['published' => $data['published']]);
-                    })
+                    ->label(fn($record) => $record->published ? 'Unpublish' : 'Publish')
+                    ->icon(fn($record) => $record->published ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle')
+                    ->color(fn($record) => $record->published ? 'danger' : 'success')
+                    ->requiresConfirmation()
+                    ->action(function ($record) {
+                        $record->update([
+                            'published' => !$record->published,
+                        ]);
+                    }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
