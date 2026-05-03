@@ -49,8 +49,6 @@ class PostForm
                                 ]),
                             Select::make("category_id")
                                 ->relationship("category", "name")
-                                ->options(Category::all()->pluck("name", "id"))
-                                ->required()
                                 ->searchable(),
                             ColorPicker::make("color"),
                         ])->columns(2),
